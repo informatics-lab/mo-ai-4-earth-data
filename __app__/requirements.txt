@@ -1,0 +1,5 @@
+# azure # with out this get "Exception: ImportError: cannot import name 'BlockBlobService' from 'azure.storage.blob'" even with "azure-storage-blob" below
+azure-storage-blob>=12.1.0
+azure-functions
+azure-servicebus
+requests

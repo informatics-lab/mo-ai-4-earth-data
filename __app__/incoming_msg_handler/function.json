@@ -1,0 +1,33 @@
+{
+    "scriptFile": "__init__.py",
+    "bindings": [{
+            "authLevel": "function",
+            "type": "httpTrigger",
+            "direction": "in",
+            "name": "req",
+            "methods": [
+                "get",
+                "post"
+            ]
+        },
+        {
+            "type": "http",
+            "direction": "out",
+            "name": "$return"
+        },
+        {
+            "type": "serviceBus",
+            "direction": "out",
+            "connection": "ServiceBusConnection",
+            "name": "datamsg",
+            "queueName": "%DATA_QUEUE_NAME%"
+        },
+        {
+            "type": "serviceBus",
+            "direction": "out",
+            "connection": "ServiceBusConnection",
+            "name": "submsg",
+            "queueName": "%SUBSCRIBE_QUEUE_NAME%"
+        }
+    ]
+}
