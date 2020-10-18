@@ -6,24 +6,33 @@ import logging
 
 import azure.functions as func
 
-HEADERS = {
-    "x-api-key": os.environ['APIKEY']
-}
+from __app__.blob import write_lotus_url_data_to_blob
+import traceback
 
 
-def main(msg: func.ServiceBusMessage, outputblob: func.Out[func.InputStream]):
-    msg_as_txt = msg.get_body().decode('utf-8')
-    logging.info('Python ServiceBus queue trigger processed message: %s', msg_as_txt)
+
+
+async def main(msg: func.ServiceBusMessage):
     try:
-        message = json.loads(msg_as_txt)
-        url = message['url']
+        msg_as_txt = msg.get_body().decode('utf-8')
+        logging.info('Python ServiceBus queue trigger processed message:\n%s', msg_as_txt)
+        try:
+            message = json.loads(msg_as_txt)
+            url = message['url']
+            name = message['target_blob']
 
-    except (ValueError, KeyError) as e:
-        logging.warning(f'Message mal formed: {e} {message}')
+        except (ValueError, KeyError) as e:
+            logging.warning(f'Message mal formed: {e} {message}')
+            raise
+
+
+        logging.info('Object at: %s', url)
+
+        await write_lotus_url_data_to_blob(url, name)
+
+        logging.info(f"Wrote to blob: {name}")
+
+    except:
+        logging.error(traceback.format_exc())
+        traceback.print_exc()
         raise
-
-    logging.info('object at: %s', url)
-
-    raw_bytes = requests.get(url, headers=HEADERS).content
-    logging.info(f"Write to blob")
-    outputblob.set(io.BytesIO(raw_bytes))

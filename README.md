@@ -7,8 +7,9 @@
 * `python -m venv ./env`
 * `source env/bin/activate`
 * `pip3 install -r __app__/requirements.txt`
-* Run `cd __app__; func init` in project root.
+* Run `cd __app__; func init` in project root. Select 'Python' if prompted.
 * Run `cd __app__; func settings add APIKEY <SERVICE HUB KEY>`
+
 
 
 ## Run locally
@@ -19,13 +20,19 @@ You can run locally but this will connect to the live azure resources. You are b
 
 If running for first time on a machine you may wish to pull down remote settings `cd __app__; func azure functionapp fetch-app-settings; cd ..`
 
-If installing from scratch you'll need to set up resources using `./scripts/set_up_resources.sh`.
+If installing from scratch:
+- copy `env-template.env` to `.env` and update values as required.
+- You'll need to set up resources using `./scripts/set_up_resources.sh`.
 
 You can use `ngrok http 7071` to test integration with external services if required.
 
 To run: `func start`
 
 ### Test:
+Once
+`pip3 install pytest pytest-env pytest-asyncio`
+
+Every time:
 `pytest`
 
 Or with logging info: `pytest  --log-cli-level info`

@@ -29,6 +29,7 @@ dist
 .python_packages/
 
 # Python Environments
+.env
 .venv
 env/
 venv/
@@ -40,8 +41,3 @@ venv.bak/
 __pycache__/
 *.py[cod]
 *$py.class
-
-# misc
-scratch.py
-notebooks/subscribe-to-service-hub.ipynb
-

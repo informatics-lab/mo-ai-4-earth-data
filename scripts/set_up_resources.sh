@@ -17,15 +17,17 @@ fi
 FUNC_STORAGE_CONN_STR=$(az storage account show-connection-string --name $STORAGE_ACCOUNT_NAME --resource-group ${RESOURCE_GROUP} --query "connectionString" -o tsv)
 
 if ! az functionapp show --name $APP_NAME  --resource-group $RESOURCE_GROUP >/dev/null 2>&1 ; then
-    # using westeurope beacuse of this https://stackoverflow.com/questions/53790218/error-scale-operation-is-not-allowed-for-this-subscription-in-this-region-when
+    # Might have to use westeurope beacuse of this https://stackoverflow.com/questions/53790218/error-scale-operation-is-not-allowed-for-this-subscription-in-this-region-when
+    # --consumption-plan-location  westeurope \
     az functionapp create --name $APP_NAME \
     --name $APP_NAME \
     --storage-account $STORAGE_ACCOUNT_NAME\
-    --consumption-plan-location westeurope \
+    --consumption-plan-location $RESOURCE_LOCATION \
     --resource-group $RESOURCE_GROUP \
     --runtime python \
     --runtime-version 3.7 \
-    --os-type Linux
+    --os-type Linux \
+    --functions-version 2
 fi
 
 
@@ -47,8 +49,9 @@ if ! az servicebus queue show --resource-group $RESOURCE_GROUP --namespace-name 
             --namespace-name $SERVICE_BUS_NAMESPACE \
             --name $DATA_QUEUE_NAME  \
             --default-message-time-to-live PT3H \
-            --lock-duration PT2M \
-            --max-delivery-count 5
+            --lock-duration PT3M \
+            --max-delivery-count 5 \
+            --max-size 5120
 fi 
 
 
@@ -85,5 +88,7 @@ func settings add DATA_QUEUE_NAME $DATA_QUEUE_NAME
 func settings add SUBSCRIBE_QUEUE_NAME $SUBSCRIBE_QUEUE_NAME
 func settings add CONTAINER_NAME $CONTAINER_NAME
 func settings add ServiceBusConnection $SERVICE_BUS_KEYS
-func settings add AI_FOR_EARTH_CONN_STR $AI_FOR_EARTH_CONN_STR
+func settings add BLOB_CONN_STR $AI_FOR_EARTH_CONN_STR
+func settings add FUNCTIONS_WORKER_PROCESS_COUNT $FUNCTIONS_WORKER_PROCESS_COUNT
+func settings add DELAY_HOURS $DELAY_HOURS
 # func settings add AI_FOR_EARTH_STORAGE_ACCOUNT_NAME $AI_FOR_EARTH_STORAGE_ACCOUNT_NAME
